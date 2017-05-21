@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-,
-from __future__ import absolute_import
-from __future__ import print_function
+
+
 
 import atexit
 from time import time
 import logging
+from functools import reduce
 
 logger = logging.getLogger("root_optimize.timing")
 logger.setLevel(10) # we use info

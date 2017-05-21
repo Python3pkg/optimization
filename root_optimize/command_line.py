@@ -9,8 +9,8 @@
 # __future__ imports must occur at beginning of file
 # redirect python output using the newer print function with file description
 #   print(string, f=fd)
-from __future__ import print_function
-from __future__ import absolute_import
+
+
 
 # for logging, set it up
 import logging
@@ -93,7 +93,7 @@ def do_cuts(args):
   import joblib.parallel
   joblib.parallel.CallBack = CallBack
 
-  results = Parallel(n_jobs=num_cores)(delayed(utils.do_cut)(did, files, supercuts, weights, args.tree_name, args.output_directory, args.eventWeightBranch, args.numpy, pids) for did, files in dids.iteritems())
+  results = Parallel(n_jobs=num_cores)(delayed(utils.do_cut)(did, files, supercuts, weights, args.tree_name, args.output_directory, args.eventWeightBranch, args.numpy, pids) for did, files in dids.items())
 
   overall_progress.close()
 
@@ -139,8 +139,8 @@ def do_optimize(args):
       bkgd_dids.append(did)
       with open(fname, 'r') as f:
         bkgd_data = json.load(f)
-        for cuthash, counts_dict in bkgd_data.iteritems():
-          for counts_type, counts in counts_dict.iteritems():
+        for cuthash, counts_dict in bkgd_data.items():
+          for counts_type, counts in counts_dict.items():
             total_bkgd[cuthash][counts_type] += counts
             if counts_type == 'scaled' and rescale:
               if did in rescale:
@@ -173,8 +173,8 @@ def do_optimize(args):
       significances = []
       with open(fname, 'r') as f:
         signal_data = json.load(f)
-        for cuthash, counts_dict in signal_data.iteritems():
-          sig_dict = dict([('hash', cuthash)] + [('significance_{0:s}'.format(counts_type), utils.get_significance(args.lumi*1000*counts, args.lumi*1000*total_bkgd[cuthash][counts_type], args.insignificanceThreshold, args.bkgdUncertainty, args.bkgdStatUncertainty, total_bkgd[cuthash]['raw'])) for counts_type, counts in counts_dict.iteritems()] + [('yield_{0:s}'.format(counts_type), {'sig': args.lumi*1000*counts, 'bkg': args.lumi*1000*total_bkgd[cuthash][counts_type]}) for counts_type, counts in counts_dict.iteritems()])
+        for cuthash, counts_dict in signal_data.items():
+          sig_dict = dict([('hash', cuthash)] + [('significance_{0:s}'.format(counts_type), utils.get_significance(args.lumi*1000*counts, args.lumi*1000*total_bkgd[cuthash][counts_type], args.insignificanceThreshold, args.bkgdUncertainty, args.bkgdStatUncertainty, total_bkgd[cuthash]['raw'])) for counts_type, counts in counts_dict.items()] + [('yield_{0:s}'.format(counts_type), {'sig': args.lumi*1000*counts, 'bkg': args.lumi*1000*total_bkgd[cuthash][counts_type]}) for counts_type, counts in counts_dict.items()])
           significances.append(sig_dict)
       logger.log(25, '\t\tCalculated significances for {0:d} cuts'.format(len(significances)))
       # at this point, we have a list of significances that we can dump to a file
@@ -239,7 +239,7 @@ def do_hash(args):
     logger.info("\tChecking {0:s}".format(cut_hash))
     if cut_hash in hash_values:
       with open(os.path.join(args.output_directory, "{0}.json".format(cut_hash)), 'w+') as f:
-        f.write(json.dumps([{k: (NoIndent(v) if k == 'pivot' else v)  for k, v in d.iteritems() if k in ['selections', 'pivot', 'fixed']} for d in cut], sort_keys=True, indent=4, cls=NoIndentEncoder))
+        f.write(json.dumps([{k: (NoIndent(v) if k == 'pivot' else v)  for k, v in d.items() if k in ['selections', 'pivot', 'fixed']} for d in cut], sort_keys=True, indent=4, cls=NoIndentEncoder))
       hash_values.remove(cut_hash)
       logger.log(25, "\tFound cut for hash {0:32s}. {1:d} hashes left.".format(cut_hash, len(hash_values)))
     if not hash_values: break
@@ -258,7 +258,7 @@ def do_summary(args):
   num_cores = min(multiprocessing.cpu_count(),args.num_cores)
   logger.log(25, "Using {0} cores".format(num_cores) )
   results = Parallel(n_jobs=num_cores)(delayed(utils.get_summary)(filename, mass_windows, args.stop_masses) for filename in glob.glob(os.path.join(args.search_directory, "s*.b*.json")))
-  results = filter(None, results)
+  results = [_f for _f in results if _f]
   logger.log(25, "Generated summary for {0} items".format(len(results)))
 
   with open(args.output, 'w+') as f:
@@ -286,7 +286,7 @@ def main():
       # but better save than sorry
       for subparsers_action in subparsers_actions:
         # get all subparsers and print help
-        for choice, subparser in subparsers_action.choices.items():
+        for choice, subparser in list(subparsers_action.choices.items()):
           print("-"*80)
           print("Subparser '{}'".format(choice))
           print(subparser.format_help())
@@ -419,7 +419,7 @@ def main():
       # call the function and do stuff
       args.func(args)
 
-  except Exception, e:
+  except Exception as e:
     logger.exception("{0}\nAn exception was caught!".format("-"*20))
 
 if __name__ == "__main__":

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-,
-from __future__ import absolute_import
-from __future__ import print_function
+
+
 
 import ROOT
+import collections
+from functools import reduce
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 import csv
@@ -48,27 +50,27 @@ def echo(*echoargs, **echokwargs):
     """
 
     # Unpack function's arg count, arg names, arg defaults
-    code = fn.func_code
+    code = fn.__code__
     argcount = code.co_argcount
     argnames = code.co_varnames[:argcount]
-    fn_defaults = fn.func_defaults or list()
-    argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
+    fn_defaults = fn.__defaults__ or list()
+    argdefs = dict(list(zip(argnames[-len(fn_defaults):], fn_defaults)))
 
     def wrapped(*v, **k):
       # Collect function arguments by chaining together positional,
       # defaulted, extra positional and keyword arguments.
-      positional = map(format_arg_value, zip(argnames, v))
+      positional = list(map(format_arg_value, list(zip(argnames, v))))
       defaulted = [format_arg_value((a, argdefs[a]))
                    for a in argnames[len(v):] if a not in k]
-      nameless = map(repr, v[argcount:])
-      keyword = map(format_arg_value, k.items())
+      nameless = list(map(repr, v[argcount:]))
+      keyword = list(map(format_arg_value, list(k.items())))
       args = positional + defaulted + nameless + keyword
       write("%s(%s)\n" % (fn.__name__, ", ".join(args)))
       return fn(*v, **k)
     return wrapped
 
   write = echokwargs.get('write', sys.stdout.write)
-  if len(echoargs) == 1 and callable(echoargs[0]):
+  if len(echoargs) == 1 and isinstance(echoargs[0], collections.Callable):
     return echo_wrap(echoargs[0])
   return echo_wrap
 
@@ -253,7 +255,7 @@ alphachars = re.compile('\W+')
 def selection_to_branches(selection_string, tree):
   global alphachars
   # filter out all selection criteria
-  raw_branches = filter(None, alphachars.sub(' ', selection_string.format(*['-']*10)).split(' '))
+  raw_branches = [_f for _f in alphachars.sub(' ', selection_string.format(*['-']*10)).split(' ') if _f]
   # filter out those that are just numbers in string
   return [branch for branch in raw_branches if not branch.isdigit()]
 

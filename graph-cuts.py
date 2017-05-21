@@ -17,7 +17,7 @@ def get_cut_value(args, cut, cut_hash, pivotIndex = 0):
     if found_cut:
       val = entry['pivot'][pivotIndex]
     else:
-      print 'Did not find cut '+cut+' in hash file'
+      print('Did not find cut '+cut+' in hash file')
       val = -1
   return val
 
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     # a cut string can have multiple pivots, need to draw a histogram for each pivot subsection
     numPivots = len(supercut['st3'])
     for pivotIndex in range(numPivots):
-      print(i, cut)
+      print((i, cut))
       c = init_canvas(args)
       hist = init_hist(args, supercut, pivotIndex)
 
@@ -207,9 +207,9 @@ if __name__ == '__main__':
 
       for ext in ['pdf']:
         c.SaveAs(savefilename+'.{0}'.format(ext))
-      print 'Saving file ' + savefilename
+      print('Saving file ' + savefilename)
     i += 1
-  print 'Done'
+  print('Done')
 
   exit(0)
 

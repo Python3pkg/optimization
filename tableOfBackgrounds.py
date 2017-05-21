@@ -54,7 +54,7 @@ for region in regions:
         int(did)
       except ValueError:
         if not args.hide_invalid_dids:
-          print 'No valid DID found. Skipping {0}'.format(fname)
+          print('No valid DID found. Skipping {0}'.format(fname))
         continue #skip because it's probably a bad thing to use
       if did not in args.include_dids: continue
 
@@ -68,7 +68,7 @@ for region in regions:
         if group not in groups: groups[group] = copy.deepcopy(nullgroup)
 
         # we just need the subset which is often first item (look at an example json)
-        data = data[data.keys()[0]]
+        data = data[list(data.keys())[0]]
         for count_type in count_types:
           sf = 1
           if count_type == 'scaled': sf = args.lumi*1000
@@ -84,7 +84,7 @@ for count_type in count_types:
 
   # specify whether we look at raw, weighted, or scaled (table caption) at the top
   header_label = count_type+(' ({0:0.2f}ifb)'.format(args.lumi) if (count_type == 'scaled') else '')
-  print(" "*max_column_width+"{0: ^{1}s}".format(header_label, max_column_width*len(regions)))
+  print((" "*max_column_width+"{0: ^{1}s}".format(header_label, max_column_width*len(regions))))
 
   # define the table header row
   printStr = "{0:<{1}s}".format("GROUP", max_column_width)
@@ -99,16 +99,16 @@ for count_type in count_types:
   sumValues = [0]*len(regions)
   for group in sorted(groups):
     values = getValues(group, groups, count_type)
-    print(valueStr.format(*values))
+    print((valueStr.format(*values)))
     sumValues = [sum(x) for x in zip(sumValues, values[1:])]
-  print(" "*max_column_width+"-"*max_column_width*len(regions))
+  print((" "*max_column_width+"-"*max_column_width*len(regions)))
   sumValues = ["total"] + sumValues
-  print(valueStr.format(*sumValues))
+  print((valueStr.format(*sumValues)))
   # add ttbar fraction
   ttbarFrac = getValues('ttbar', groups, count_type)
   ttbarFrac[0] = '%ttbar'
   for i in range(1, len(ttbarFrac)):
     ttbarFrac[i] = numpy.float64(ttbarFrac[i])/sumValues[i]
-  print(valueStr.format(*ttbarFrac))
-  print(" "*max_column_width+"="*max_column_width*len(regions))
+  print((valueStr.format(*ttbarFrac)))
+  print((" "*max_column_width+"="*max_column_width*len(regions)))
 

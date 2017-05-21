@@ -49,7 +49,7 @@ translations = json.load(file(args.translations, 'r'))
 
 for fname in args.files:
   # first open file
-  print("Opening {0}".format(fname))
+  print(("Opening {0}".format(fname)))
   out_file = root_open(fname, "UPDATE")
 
   '''
@@ -60,7 +60,7 @@ for fname in args.files:
 
   parent_dir = os.path.dirname(args.output)
   if getattr(out_file, parent_dir, None) is None:
-    print("\tMaking {0}".format(parent_dir))
+    print(("\tMaking {0}".format(parent_dir)))
     out_file.mkdir(parent_dir, recurse=True)
 
   # now that we know parent directory exists...
@@ -70,18 +70,18 @@ for fname in args.files:
   # if it exists and user wants to overwrite, do so
   out_file.rmdir(base_dir)
   if getattr(parent_dir, base_dir, None) and args.overwrite:
-    print("\tRemoving {0}".format(base_dir))
+    print(("\tRemoving {0}".format(base_dir)))
     parent_dir.rmdir(base_dir)
   try:
     # this will crash here if the user doesn't choose to overwrite directory that exists
-    print("\tMaking {0}".format(base_dir))
+    print(("\tMaking {0}".format(base_dir)))
     parent_dir.mkdir(base_dir)
   except ValueError:
     print("\t\tThis exists. Try re-running with -f, --force to overwrite the existing directory or specify a different output directory")
     sys.exit(1)
 
   # guess we're all ok, so cd and continue
-  print("\tCd'ing into {0}".format(args.output))
+  print(("\tCd'ing into {0}".format(args.output)))
   out_file.cd(args.output)
 
   # get the tree if exists
@@ -90,7 +90,7 @@ for fname in args.files:
   # no entries, just write empty histograms to file
   if tree is None or tree.get_entries() == 0:
     print("\tNo entries in ntuple, writing empty histograms and finishing.")
-    for histName, st3 in boundaries.iteritems():
+    for histName, st3 in boundaries.items():
       h = Hist(st3[2], st3[0], st3[1], name=histName)
       h.write()
   else:
@@ -106,7 +106,7 @@ for fname in args.files:
       # get the branch we need to draw
       selection_string = differences[-1]['selections']
 
-      print("\tLooking at selection: {0}".format(selection_string))
+      print(("\tLooking at selection: {0}".format(selection_string)))
       branchesSpecified = set(utils.selection_to_branches(selection_string, tree))
       # get actual list of branches in the file
       availableBranches = utils.tree_get_branches(tree, args.eventWeightBranch)
@@ -123,7 +123,7 @@ for fname in args.files:
         print("\t\tWarning: selection has multiple branches.")
         translation = translations.get(selection_string, None)
         if translation is None:
-          print("\t\tSelection '{0:s}' not in translations".format(selection_string))
+          print(("\t\tSelection '{0:s}' not in translations".format(selection_string)))
         else:
           # more than one branch
           branchToDraw = translation.get('draw')
@@ -134,7 +134,7 @@ for fname in args.files:
         # in most cases, these will be the same, we separate for the top tagging case
         histName = branchToDraw
 
-      print("\t\tDrawing {0}".format(histName))
+      print(("\t\tDrawing {0}".format(histName)))
 
       h = Hist(boundaries[histName][2], boundaries[histName][0], boundaries[histName][1], name=histName)
       # draw with selection and branch

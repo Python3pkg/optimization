@@ -1,10 +1,11 @@
 import os
 import csv
 import json
+from functools import reduce
 
 def add_cuts(cuts_left, cuts_right):
   output_dict = {}
-  for h in cuts_left.keys():
+  for h in list(cuts_left.keys()):
     output_dict[h] = dict((k, cuts_left[h][k]+cuts_right[h][k]) for k in ["raw", "scaled", "weighted"])
   return output_dict
 

@@ -55,10 +55,10 @@ def set_bin(h, x, y, val):
   xx = yy = zz = ROOT.Long(0)
   h.GetBinXYZ(b, xx, yy, zz)
   if xx != 0 or yy != 0 or zz != 0:
-    print "bin was already set?\n\txx: {0}\n\tyy: {1}\n\tzz: {2}".format(xx, yy, zz)
-    print "x: {0}\ty: {1}".format(x, y)
-    print "new value: {0}".format(val)
-    print "-"*20
+    print("bin was already set?\n\txx: {0}\n\tyy: {1}\n\tzz: {2}".format(xx, yy, zz))
+    print("x: {0}\ty: {1}".format(x, y))
+    print("new value: {0}".format(val))
+    print("-"*20)
   if val > 0:
     h.SetBinContent(b, val)
   else:
@@ -123,7 +123,7 @@ def get_run1(filename,linestyle,linewidth,linecolor):
 
 def save_canvas(c, filename):
   c.SaveAs(filename + ".pdf")
-  print "Saving file " + filename
+  print("Saving file " + filename)
   c.Clear()
 
 from rootpy.plotting.style import set_style, get_style
@@ -155,17 +155,17 @@ for i in range(1,args.numSRs+1):
 # find the winning SR
 import operator
 winners = dict((i, 0) for i in range(1, args.numSRs+1))
-for did, vals in significances.iteritems():
-  winner = max(vals.iteritems(), key=operator.itemgetter(1))[0]
+for did, vals in significances.items():
+  winner = max(iter(vals.items()), key=operator.itemgetter(1))[0]
   winners[winner] += 1
   significances[did]['winner'] = winner
 
-print winners
+print(winners)
 
 # do optimal signal regions
 c = init_canvas()
 h = plotting.init_hist("Optimal Signal Region", 200, 2500, 0, 2300, 100)
-for did, vals in significances.iteritems():
+for did, vals in significances.items():
   winningSR = vals['winner']
   mgluino, mstop, mlsp = mdict[did]
   if mstop != 5000: continue
@@ -181,7 +181,7 @@ save_canvas(c, '{0}_optimalSR_grid_lumi{1}'.format(os.path.join(args.output_dir,
 # now make a plot of the actual significances
 c = init_canvas()
 h = plotting.init_hist("Significance of optimal SR", 200, 2500, 0, 2300, 100)
-for did, vals in significances.iteritems():
+for did, vals in significances.items():
   winningSR = vals['winner']
   mgluino, mstop, mlsp = mdict[did]
   if mstop != 5000: continue

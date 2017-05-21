@@ -86,7 +86,7 @@ if __name__ == '__main__':
     #p = exclusion()
     #p.Draw()
     c.SaveAs(savefilename + ".pdf")
-    print "Saving file " + savefilename
+    print("Saving file " + savefilename)
     c.Clear()
 
   exit(0)

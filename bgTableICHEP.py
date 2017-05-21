@@ -353,7 +353,7 @@ for regionID in range(0, 5):
         groups[group] = {'SR': copy.deepcopy(nulldict), 'CR': copy.deepcopy(nulldict)}
 
       # we just need the subset which is often first item (look at an example json)
-      data = data[data.keys()[0]]
+      data = data[list(data.keys())[0]]
       for count_type in count_types:
         sf = 1
         # scale by 2ifb
@@ -367,22 +367,22 @@ def getValues(group, groups):
 
 for index, typeBkgd in zip(count_types, ['raw', 'weighted', 'scaled ({0:0.2f} ifb)'.format(scaleFactor)]):
   sumValues = [0]*10
-  print("{0: ^150s}".format(typeBkgd))
+  print(("{0: ^150s}".format(typeBkgd)))
   printStr = "{{0:12}}{0:s}0{0:s}1{0:s}2{0:s}3{0:s}4{1:s}1{1:s}2{1:s}3{1:s}4".format("\t{1:>9}", "\t{2:>9}")
-  print(printStr.format("GROUP", "SR", "CR"))
+  print((printStr.format("GROUP", "SR", "CR")))
   for group in sorted(groups):
     values = getValues(group, groups)
     valueStr = "{{0:12}}\t{{1:{0:s}}}\t{{2:{0:s}}}\t{{3:{0:s}}}\t{{4:{0:s}}}\t{{5:{0:s}}}\t{{6:{0:s}}}\t{{7:{0:s}}}\t{{8:{0:s}}}\t{{9:{0:s}}}".format("10.4f")
-    print(valueStr.format(*values))
+    print((valueStr.format(*values)))
     #print(valueStr)
     sumValues = [sum(x) for x in zip(sumValues, values[1:])]
-  print("\t"+("-"*100))
+  print(("\t"+("-"*100)))
   sumValues = ["total"] + sumValues
-  print(valueStr.format(*sumValues))
+  print((valueStr.format(*sumValues)))
   # add ttbar fraction
   ttbarFrac = getValues('ttbar', groups)
   ttbarFrac[0] = '%ttbar'
   for i in range(1, len(ttbarFrac)):
     ttbarFrac[i] = numpy.float64(ttbarFrac[i])/sumValues[i]
-  print(valueStr.format(*ttbarFrac))
-  print("="*100)
+  print((valueStr.format(*ttbarFrac)))
+  print(("="*100))
